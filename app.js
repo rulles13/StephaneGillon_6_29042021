@@ -1,25 +1,31 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const path = require('path');
 
-const app = express();
+const stuffRoutes = require('./routes/stuff');
+const userRoutes = require('./routes/user');
 
-/* middleware number 1*/
-app.use((req, res, next) => { // (request, response, méthode next)
-  console.log('Requête reçue !');
-  next(); //go to next middleware
-});
-/* */
-app.use((req, res, next) => {
-  res.status(201);
-  next();
-});
+mongoose.connect('mongodb+srv://stefGillon:beerday@cluster0.wzbxw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+  { useNewUrlParser: true,
+    useUnifiedTopology: true })
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-app.use((req, res, next) => {
-  res.json({ message: 'Votre requête a bien été reçue !' });
-  next();
-});
+  const app = express();
 
-app.use((req, res, next) => {
-  console.log('Réponse envoyée avec succès !');
-});
+  app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    next();
+  });
+  
+  app.use(express.json());
+
+  app.use('/images', express.static(path.join(__dirname, 'images')));
+
+  app.use('/api/stuff', stuffRoutes);
+  app.use('/api/auth', userRoutes);
 
 module.exports = app;
