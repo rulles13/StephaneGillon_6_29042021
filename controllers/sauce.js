@@ -12,13 +12,13 @@ exports.createSauce = (req, res, next) => {
     usersLiked: [],
     usersDisliked: []
   });
-  Sauce.save()
+  sauce.save()
   .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
   .catch(error => res.status(400).json({ error }));
 };
 
-exports.modifyThing = (req, res, next) => {
-  const saucegObject = req.file ?
+exports.modifySauce = (req, res, next) => {
+  const sauceObject = req.file ?
     {
       ...JSON.parse(req.body.sauce),
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
@@ -28,7 +28,7 @@ exports.modifyThing = (req, res, next) => {
     .catch(error => res.status(400).json({ error }));
 };
 
-exports.deleteThing = (req, res, next) => {
+exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
       const filename = sauce.imageUrl.split('/images/')[1];
@@ -41,14 +41,49 @@ exports.deleteThing = (req, res, next) => {
     .catch(error => res.status(500).json({ error }));
 };
 
-exports.getOneThing = (req, res, next) => {
+exports.getOneSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then(thing => res.status(200).json(thing))
     .catch(error => res.status(404).json({ error }));
 };
 
-exports.getAllThings = (req, res, next) => {   
+exports.getAllSauces = (req, res, next) => {   
   Sauce.find()
   .then(things => res.status(200).json(things))
   .catch(error => res.status(400).json({ error }));
 };
+
+exports.updateLike = (req, res, next) => {
+  console.log ("body :", req.body);
+  Sauce.findOne({ _id: req.params.id})
+  .then(sauce => res.status(200).json(sauce))
+
+  .catch(error => res.status(400).json({ error }));
+
+
+  /*const sauceObject = req.file ?
+    {
+      ...JSON.parse(req.body.sauce),
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    } : { ...req.body };
+  Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Objet modifié !'}))
+    .catch(error => res.status(400).json({ error }));*/
+};
+
+/*
+Colin Faivre14:50
+let updateObject = {
+                userLiked: sauce.userLiked,
+                userDisliked: sauce.userDisliked,
+                likes: sauce.likes,
+                dislikes: sauce.dislikes,
+            };
+Colin Faivre14:52
+Sauce.findOneAndUpdate(
+Sauce.findOneAndUpdate({ _id: req.params.id }, updateObject, { new: true })
+                .then((updatedSauce) => {
+                    res.status(200).json({ updatedSauce });
+                })
+                .catch(error => res.status(400).json({ error }));
+              */
