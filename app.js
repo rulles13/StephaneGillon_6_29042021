@@ -2,9 +2,19 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
+//const helmet = require('helmet');
+//const MaskData = require('maskdata');
 
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
+
+/*require('dotenv').config(); 
+const db = require('db')
+db.connect({
+  host: process.env.DB_HOST,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASS
+});*/
 
 mongoose.connect('mongodb+srv://stefGillon:beerday@cluster0.wzbxw.mongodb.net/sopekocko?retryWrites=true&w=majority',
   { useNewUrlParser: true,
@@ -13,6 +23,7 @@ mongoose.connect('mongodb+srv://stefGillon:beerday@cluster0.wzbxw.mongodb.net/so
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
   const app = express();
+  //app.use(helmet());
 
   app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
