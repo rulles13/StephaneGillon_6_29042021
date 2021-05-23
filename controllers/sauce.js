@@ -57,43 +57,40 @@ exports.updateLike = (req, res, next) => {
   console.log(req.params.id);
   Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
-      console.log("ligne 60");
       let updateObject = {
-        userLiked: sauce.userLiked,
-        userDisliked: sauce.userDisliked,
+        usersLiked: sauce.usersLiked,
+        usersDisliked: sauce.usersDisliked,
         likes: sauce.likes,
         dislikes: sauce.dislikes,
       }
-      console.log("ligne 67");
-      /* -- SWITCH -- */
+      switch (req.body.like) {
+
+        case 1 : // if user like the sauce
+          if (!sauce.usersLiked.includes(req.body.userId)) {
+            console.log("case 1");
+            updateObject.usersLiked.push(req.body.userId)
+          }
+          updateObject.likes = updateObject.usersLiked.length
+        break;
+  
+        case -1 : // if user dislike the sauce
+          if (!sauce.usersDisliked.includes(req.body.userId)) {
+            updateObject.usersDisliked.push(req.body.userId)
+          }
+          updateObject.dislikes = updateObject.usersDisliked.length
+        break;
+  
+        case 0 : // if user unlike or undislike the sauce
+          updateObject.usersDisliked = updateObject.usersDisliked.filter(userId => userId !== req.body.userId)
+          updateObject.usersLiked = updateObject.usersLiked.filter(userId => userId !== req.body.userId)
+          updateObject.likes = updateObject.usersLiked.length
+          updateObject.dislikes = updateObject.usersDisliked.length
+        break;
+  
+      }
       console.log(updateObjet);
       Sauce.updateOne({ _id: req.params.id }, { ...updateObject, _id: req.params.id })
         .then(() => res.status(200).json({ message: 'Objet modifié !' }))
         .catch(error => res.status(400).json({ error }));
     }).catch(error => res.status(404).json({ error }));
 };
-
-/*switch (req.body.like) {
-
-      case 1 : // if user like the sauce
-        if (!sauce.usersLiked.includes(req.body.userId)) {
-          updateObject.userLiked.push(req.body.userId)
-        }
-        updateObject.likes = userLiked.length
-      break;
-
-      case -1 : // if user dislike the sauce
-        if (!sauce.userDisliked.includes(req.body.userId)) {
-          updateObject.userDisliked.push(req.body.userId)
-        }
-        updateObject.dislikes = userDisliked.length
-      break;
-
-      case 0 : // if user unlike or undislike the sauce
-        updateObject.userDisliked = updateObject.usersDisliked.filter(userId => userId !== req.body.userId)
-        updateObject.userLiked = updateObject.usersLiked.filter(userId => userId !== req.body.userId)
-        updateObject.likes = userLiked.length
-        updateObject.dislikes = userDisliked.length
-      break;
-
-    }*/
