@@ -5,12 +5,12 @@ var validate = require('mongoose-validator');
 var sauceValidator = [
   validate({
     validator: 'isLength',
-    arguments: [3, 50],
+    arguments: [3, 50], // lenght must be between 3 and 50 characters
     message: 'Name should be between {ARGS[0]} and {ARGS[1]} characters',
   }),
   validate({
     validator: 'matches',
-    arguments: /^[a-z\d\-_\s]+$/i, // Regex pour restreindre le type de symboles utilisables
+    arguments: /^[a-z\d\-_\s]+$/i, // Regex for characters you can use
     message: 'Name should contain alpha-numeric characters only',
   }),
 ]
