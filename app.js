@@ -1,29 +1,22 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const path = require('path');
-//const helmet = require('helmet');
-//const MaskData = require('maskdata');
+const express = require('express'); // framework for nodeJs
+const bodyParser = require('body-parser'); // export JSON objects from POST request
+const mongoose = require('mongoose'); // plugin to connect to Mongo Db (data base)
+const path = require('path'); // plugin to use path for file (images)
+const helmet = require('helmet'); // plugin for security
 
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 
-/*require('dotenv').config(); 
-const db = require('db')
-db.connect({
-  host: process.env.DB_HOST,
-  username: process.env.DB_USER,
-  password: process.env.DB_PASS
-});*/
+require('dotenv').config(); 
 
-mongoose.connect('mongodb+srv://stefGillon:beerday@cluster0.wzbxw.mongodb.net/sopekocko?retryWrites=true&w=majority',
+mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wzbxw.mongodb.net/${process.env.DB_HOST}?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
   const app = express();
-  //app.use(helmet());
+  app.use(helmet());
 
   app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');

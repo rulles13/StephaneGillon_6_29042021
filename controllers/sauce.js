@@ -54,7 +54,6 @@ exports.getAllSauces = (req, res, next) => {
 };
 
 exports.updateLike = (req, res, next) => {
-  console.log(req.params.id);
   Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
       let updateObject = {
@@ -67,7 +66,6 @@ exports.updateLike = (req, res, next) => {
 
         case 1 : // if user like the sauce
           if (!sauce.usersLiked.includes(req.body.userId)) {
-            console.log("case 1");
             updateObject.usersLiked.push(req.body.userId)
           }
           updateObject.likes = updateObject.usersLiked.length
@@ -88,7 +86,6 @@ exports.updateLike = (req, res, next) => {
         break;
   
       }
-      console.log(updateObjet);
       Sauce.updateOne({ _id: req.params.id }, { ...updateObject, _id: req.params.id })
         .then(() => res.status(200).json({ message: 'Objet modifié !' }))
         .catch(error => res.status(400).json({ error }));
